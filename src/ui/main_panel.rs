@@ -1,14 +1,17 @@
-use eframe::{
-    egui::{self, Color32, Id, Pos2, Rect, Response, Sense, Stroke, Vec2},
-};
+use eframe::egui::{self, Color32, Id, Pos2, Rect, Response, Sense, Stroke, Vec2};
 
 use crate::{
     app::{NodeState, State, Yuti},
     data::{LinkType, Object, Page},
 };
 
+// ! MAIN
 impl Yuti {
+
     pub fn process_page_links(ctx: &egui::Context, ui: &mut egui::Ui, node_state: &mut NodeState) {
+        // * SETTINGS
+        let margin = 30.0;
+
         let aviable_rect = ui.available_rect_before_wrap();
         let painter = ui.painter();
         for page_link in node_state.page_links.iter() {
@@ -26,21 +29,21 @@ impl Yuti {
         }
 
         let mut in_link_area = false;
-
+        
         let left_rect = Rect::from_min_max(
             aviable_rect.left_top(),
-            aviable_rect.left_bottom() + Vec2::new(30.0, 0.0),
+            aviable_rect.left_bottom() + Vec2::new(margin, 0.0),
         );
         let right_rect = Rect::from_min_max(
-            aviable_rect.right_top() + Vec2::new(-30.0, 0.0),
+            aviable_rect.right_top() + Vec2::new(-margin, 0.0),
             aviable_rect.right_bottom(),
         );
         let top_rect = Rect::from_min_max(
             aviable_rect.left_top(),
-            aviable_rect.right_top() + Vec2::new(0.0, 30.0),
+            aviable_rect.right_top() + Vec2::new(0.0, margin),
         );
         let bottom_rect = Rect::from_min_max(
-            aviable_rect.left_bottom() + Vec2::new(0.0, -30.0),
+            aviable_rect.left_bottom() + Vec2::new(0.0, -margin),
             aviable_rect.right_bottom(),
         );
 
@@ -186,40 +189,43 @@ impl Yuti {
             );
         }
     }
+}
 
-    fn create_object_response(
-        ui: &egui::Ui,
-        obj: &mut Object,
-        index: usize,
-        rect: Rect,
-        state: &mut State,
-    ) -> Response {
-        let obj_resp = ui.interact(rect, Id::new(index), Sense::click_and_drag());
-        if obj_resp.clicked() {
-            state.selected_object_id = Some(index);
-            state.is_selected_for_text_edit = false;
-        }
-        if obj_resp.double_clicked() {
-            state.selected_object_id = Some(index);
-            state.is_selected_for_text_edit = true;
-        }
-        if obj_resp.dragged() {
-            obj.pos.0 += obj_resp.drag_motion().x;
-            obj.pos.1 += obj_resp.drag_motion().y;
-        };
-
-        obj_resp
-    }
-
-    fn create_context_menu(
-        obj_resp: &Response,
-        index: usize,
-        object_to_remove_id: &mut Option<usize>,
-    ) {
-        obj_resp.context_menu(|ui| {
-            if ui.button("Remove").clicked() {
-                *object_to_remove_id = Some(index);
+// ! HELP
+impl Yuti {
+        fn create_object_response(
+            ui: &egui::Ui,
+            obj: &mut Object,
+            index: usize,
+            rect: Rect,
+            state: &mut State,
+        ) -> Response {
+            let obj_resp = ui.interact(rect, Id::new(index), Sense::click_and_drag());
+            if obj_resp.clicked() {
+                state.selected_object_id = Some(index);
+                state.is_selected_for_text_edit = false;
+            }
+            if obj_resp.double_clicked() {
+                state.selected_object_id = Some(index);
+                state.is_selected_for_text_edit = true;
+            }
+            if obj_resp.dragged() {
+                obj.pos.0 += obj_resp.drag_motion().x;
+                obj.pos.1 += obj_resp.drag_motion().y;
             };
-        });
-    }
+    
+            obj_resp
+        }
+
+        fn create_context_menu(
+            obj_resp: &Response,
+            index: usize,
+            object_to_remove_id: &mut Option<usize>,
+        ) {
+            obj_resp.context_menu(|ui| {
+                if ui.button("Remove").clicked() {
+                    *object_to_remove_id = Some(index);
+                };
+            });
+        }
 }

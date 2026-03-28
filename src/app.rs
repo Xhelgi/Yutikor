@@ -11,7 +11,6 @@ pub struct Yuti {
 
     pub state: State,
     pub node_state: NodeState,
-    
 }
 
 pub struct NodeState {
@@ -19,7 +18,7 @@ pub struct NodeState {
     pub node_to_load_by_path: Option<PathBuf>,
     pub page_to_switch: Option<PathBuf>,
     pub page_links: Vec<PageLink>,
-    pub start_coord: (f32, f32)
+    pub start_coord: (f32, f32),
 }
 
 pub struct State {
@@ -73,7 +72,7 @@ impl Yuti {
             node_to_load_by_path: None,
             page_to_switch: None,
             page_links: Vec::new(),
-            start_coord: (0.0, 0.0)
+            start_coord: (0.0, 0.0),
         };
 
         Yuti {

@@ -1,5 +1,5 @@
 pub mod helpers;
-pub mod inst_panel;
+pub mod tools_panel;
 pub mod main_panel;
 
 use eframe::{
@@ -25,8 +25,14 @@ impl eframe::App for Yuti {
                 .frame(egui::Frame::NONE.fill(Color32::LIGHT_GRAY))
                 .show(ctx, |ui| {
                     // ! TOP MENU
-                    Self::create_top_menu(ui, &mut self.state, crt_page);
+                    Self::create_top_menu(ui, &mut self.state);
                 });
+            if self.state.is_inst_panel_visible {
+                egui::Area::new(Id::new("AreaMenuPanel")).show(ctx, |ui| {
+                    // ! TOOLS AREA
+                    Self::create_tools_area(ui, &mut self.state, crt_page);
+                });
+            }
             egui::CentralPanel::default()
                 .frame(egui::Frame::NONE.fill(Color32::WHITE))
                 .show(ctx, |ui| {
@@ -90,7 +96,11 @@ impl eframe::App for Yuti {
                         self.node_state.node_to_remove_by_path = None;
                         self.node_state.node_to_load_by_path = None;
 
-                        let resp = ui.interact(ui.available_rect_before_wrap(), Id::new("DragAndDropPanel"), Sense::click_and_drag()); 
+                        let resp = ui.interact(
+                            ui.available_rect_before_wrap(),
+                            Id::new("DragAndDropPanel"),
+                            Sense::click_and_drag(),
+                        );
                         if resp.dragged() {
                             self.node_state.start_coord.0 += resp.drag_delta().x;
                             self.node_state.start_coord.1 += resp.drag_delta().y;
@@ -123,7 +133,8 @@ impl eframe::App for Yuti {
                                     .expect("Cannot write new default Page file!");
                                 self.crt_page = Some(crt_page);
                             }
-                            self.node_state.page_links = Self::get_links_by_path(to_load_path, graph_root);
+                            self.node_state.page_links =
+                                Self::get_links_by_path(to_load_path, graph_root);
                         }
                     });
             }
@@ -173,7 +184,7 @@ impl eframe::App for Yuti {
             self.crt_page = None;
             self.state.page_to_close = false;
             self.node_state.page_links = Vec::new();
-            
+
             if let Ok(file_string) = fs::read_to_string(self.path.join(path))
                 && let Ok(page) = serde_json::from_str(&file_string)
             {
@@ -188,7 +199,8 @@ impl eframe::App for Yuti {
             }
             self.node_state.node_to_load_by_path = Some(path.clone());
             let root_node = self.graph_root_node.as_ref();
-            self.node_state.page_links = Self::get_links_by_path(path, root_node.expect("SwitchPage root not found!"));
+            self.node_state.page_links =
+                Self::get_links_by_path(path, root_node.expect("SwitchPage root not found!"));
             self.node_state.page_to_switch = None;
         }
     }

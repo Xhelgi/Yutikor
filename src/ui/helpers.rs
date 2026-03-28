@@ -30,20 +30,31 @@ impl Yuti {
             for sub_page in root_node.sub_nodes.iter().flatten() {
                 let sub_pos = sub_page.get_pos();
                 let vec = (sub_pos - root_pos).normalized() * 10_000.0;
-                links.push(PageLink { link_type: LinkType::ChildLink, direction_vec: (vec.x, vec.y), file_name: sub_page.path.clone() });
+                links.push(PageLink {
+                    link_type: LinkType::ChildLink,
+                    direction_vec: (vec.x, vec.y),
+                    file_name: sub_page.path.clone(),
+                });
             }
             return links;
-        }
-        else {
+        } else {
             for sub_page in root_node.sub_nodes.iter().flatten() {
                 if sub_page.path == path {
                     let sub_pos = sub_page.get_pos();
                     let vec = (root_pos - sub_pos).normalized() * 10_000.0;
-                    links.push(PageLink { link_type: LinkType::ParentLink, direction_vec: (vec.x, vec.y), file_name: root_node.path.clone() });
+                    links.push(PageLink {
+                        link_type: LinkType::ParentLink,
+                        direction_vec: (vec.x, vec.y),
+                        file_name: root_node.path.clone(),
+                    });
                     for sub_sub_page in sub_page.sub_nodes.iter().flatten() {
                         let sub_sub_pos = sub_sub_page.get_pos();
                         let sub_vec = (sub_sub_pos - sub_pos).normalized() * 10_000.0;
-                        links.push(PageLink { link_type: LinkType::ChildLink, direction_vec: (sub_vec.x, sub_vec.y), file_name: sub_sub_page.path.clone() });
+                        links.push(PageLink {
+                            link_type: LinkType::ChildLink,
+                            direction_vec: (sub_vec.x, sub_vec.y),
+                            file_name: sub_sub_page.path.clone(),
+                        });
                     }
                     return links;
                 }

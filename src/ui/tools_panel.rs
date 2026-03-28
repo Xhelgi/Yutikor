@@ -6,101 +6,99 @@ use crate::{
 };
 
 impl Yuti {
-    pub fn create_top_menu(ui: &mut egui::Ui, state: &mut State, crt_page: &mut Page) {
-        // \\ CONSTS // \\
-        let visible_height = 120.0;
-        let hidden_height = 20.0;
+    // ! HEADER
+    pub fn create_top_menu(ui: &mut egui::Ui, state: &mut State) {
+        let height = 20.0;
         let first_block_width = 100.0;
         let last_block_width = 200.0;
+        let (text, color) = if state.is_inst_panel_visible {
+            ("Exit from Edit", Color32::DARK_BLUE)
+        } else {
+            ("Go to Edit", Color32::DARK_GREEN)
+        };
+
+        ui.horizontal(|ui| {
+            if ui
+                .add_sized([first_block_width, height], egui::Button::new("Close Page"))
+                .clicked()
+            {
+                state.page_to_close = true;
+            }
+            
+            ui.with_layout(Layout::right_to_left(egui::Align::Center), |ui| {
+                if ui
+                    .add_sized(
+                        [last_block_width, height],
+                        egui::Button::new(text).fill(color),
+                    )
+                    .clicked()
+                {
+                    state.is_inst_panel_visible = !state.is_inst_panel_visible;
+                }
+
+                ui.centered_and_justified(|ui| {
+                    ui.horizontal_centered(|ui| {
+                        ui.add(egui::Label::new(
+                            egui::RichText::new("Yutikora Core")
+                                .color(Color32::DARK_RED)
+                                .font(FontId::monospace(16.0)),
+                        ));
+                    });
+                });
+            });
+        });
+    }
+
+    // ! TOOLS AREA
+    pub fn create_tools_area(ui: &mut egui::Ui, state: &mut State, crt_page: &mut Page) {
+        // \\ CONSTS // \\
+        let height = 120.0;
         let sector_width = 150.0;
         // \\ CONSTS // \\
 
-        // Set hiden|visible size
-        let size = if state.is_inst_panel_visible {
-            visible_height
-        } else {
-            hidden_height
-        };
-
-        ui.add_sized([ui.available_width(), size], |ui: &mut egui::Ui| {
+        ui.add_sized([ui.available_width(), height], |ui: &mut egui::Ui| {
             ui.horizontal(|ui| {
-                let height = ui.available_height();
+                // ========= Center Content
+                ui.centered_and_justified(|ui| {
+                    ui.horizontal(|ui| {
+                        if state.is_inst_panel_visible
+                            && let Some(selected_obj_id) = state.selected_object_id
+                            && let Some(object) = crt_page.objects.get_mut(selected_obj_id)
+                        {
+                            // ====== IF PANEL IS VISIBLE AND OBJECT SELECTED
 
-                // ========= First Block
-                if ui
-                    .add_sized([first_block_width, height], egui::Button::new("Close Page"))
-                    .clicked()
-                {
-                    state.page_to_close = true;
-                }
+                            ui.add_space(10.0);
+                            ui.separator();
 
-                // ========= Last Block
-                ui.with_layout(Layout::right_to_left(egui::Align::Center), |ui| {
-                    if ui
-                        .add_sized([last_block_width, height], egui::Button::new("<|>"))
-                        .clicked()
-                    {
-                        state.is_inst_panel_visible = !state.is_inst_panel_visible;
-                    }
+                            // ! BACKGROUND SECTOR
+                            Self::draw_background_sector(state, ui, object, sector_width, height);
+                            ui.separator();
 
-                    // ========= Center Content
-                    ui.centered_and_justified(|ui| {
-                        ui.horizontal(|ui| {
-                            if state.is_inst_panel_visible
-                                && let Some(selected_obj_id) = state.selected_object_id
-                                && let Some(object) = crt_page.objects.get_mut(selected_obj_id)
-                            {
-                                // ====== IF PANEL IS VISIBLE AND OBJECT SELECTED
+                            // ! FONTS SECTOR
+                            Self::draw_fonts_sector(state, ui, object, sector_width, height);
 
-                                ui.add_space(10.0);
-                                ui.separator();
+                            ui.separator();
 
-                                // ! BACKGROUND SECTOR
-                                Self::draw_background_sector(
-                                    state,
-                                    ui,
-                                    object,
-                                    sector_width,
-                                    height,
-                                );
-                                ui.separator();
+                            // ! STROKE SECTOR
+                            Self::draw_stroke_sector(state, ui, object, sector_width, height);
 
-                                // ! FONTS SECTOR
-                                Self::draw_fonts_sector(state, ui, object, sector_width, height);
+                            ui.separator();
 
-                                ui.separator();
+                            // ! POSITION SECTOR
+                            Self::draw_position_sector(state, ui, object, sector_width, height);
 
-                                // ! STROKE SECTOR
-                                Self::draw_stroke_sector(state, ui, object, sector_width, height);
+                            ui.separator();
 
-                                ui.separator();
+                            // ! TEXT SECTOR
+                            Self::draw_text_sector(ui, object, sector_width, height);
 
-                                // ! POSITION SECTOR
-                                Self::draw_position_sector(state, ui, object, sector_width, height);
+                            ui.separator();
 
-                                ui.separator();
+                            // ! Z-INDEX SECTOR
+                            Self::draw_z_index_sector(state, ui, object, sector_width, height);
 
-                                // ! TEXT SECTOR
-                                Self::draw_text_sector(ui, object, sector_width, height);
-
-                                ui.separator();
-
-                                // ! Z-INDEX SECTOR
-                                Self::draw_z_index_sector(state, ui, object, sector_width, height);
-
-                                ui.separator();
-                            } else {
-                                // ====== IF PANEL IS INVISIBLE (just label)
-
-                                ui.horizontal_centered(|ui| {
-                                    ui.add(egui::Label::new(
-                                        egui::RichText::new("Yutikora Core")
-                                            .color(Color32::DARK_RED)
-                                            .font(FontId::monospace(16.0)),
-                                    ));
-                                });
-                            }
-                        });
+                            ui.separator();
+                        }
                     });
                 });
             })
@@ -108,6 +106,7 @@ impl Yuti {
         });
     }
 
+    // ? SECTORS
     fn draw_background_sector(
         state: &mut State,
         ui: &mut egui::Ui,
@@ -136,7 +135,6 @@ impl Yuti {
             .response
         });
     }
-
     fn draw_fonts_sector(
         state: &mut State,
         ui: &mut egui::Ui,
@@ -172,7 +170,6 @@ impl Yuti {
             .response
         });
     }
-
     fn draw_stroke_sector(
         state: &mut State,
         ui: &mut egui::Ui,
@@ -214,7 +211,6 @@ impl Yuti {
             .response
         });
     }
-
     fn draw_position_sector(
         state: &mut State,
         ui: &mut egui::Ui,
@@ -259,7 +255,6 @@ impl Yuti {
             .response
         });
     }
-
     fn draw_text_sector(ui: &mut egui::Ui, object: &mut Object, sector_width: f32, height: f32) {
         ui.add_sized([sector_width, height], |ui: &mut egui::Ui| {
             ui.vertical(|ui| {
@@ -292,7 +287,6 @@ impl Yuti {
             .response
         });
     }
-
     fn draw_z_index_sector(
         state: &mut State,
         ui: &mut egui::Ui,

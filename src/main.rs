@@ -14,6 +14,5 @@ fn main() -> eframe::Result {
         "Yutikora",
         options,
         Box::new(|cc| Ok(Box::new(Yuti::new(cc)))),
-        // Box::new(|cc| Ok(Box::new(Test::new(cc)))),
     )
 }

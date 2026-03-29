@@ -33,7 +33,7 @@ pub struct State {
     pub context_menu_color: String,
     pub context_menu_font_color: String,
     pub context_menu_stroke_color: String,
-    pub is_inst_panel_visible: bool,
+    pub are_tools_visibled: bool,
 
     pub sett_backgound_color: Color32,
     pub sett_font_color: Color32,
@@ -58,7 +58,7 @@ impl Yuti {
             context_menu_color: String::new(),
             context_menu_stroke_color: String::new(),
             context_menu_font_color: String::new(),
-            is_inst_panel_visible: false,
+            are_tools_visibled: false,
 
             sett_backgound_color: Color32::BLACK,
             sett_font_color: Color32::BLACK,

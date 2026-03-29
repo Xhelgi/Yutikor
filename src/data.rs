@@ -2,6 +2,7 @@ pub mod data_impl;
 
 use std::path::PathBuf;
 
+use eframe::egui::Color32;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -47,4 +48,10 @@ pub struct PageLink {
     pub link_type: LinkType,
     pub direction_vec: (f32, f32),
     pub file_name: PathBuf,
+}
+
+pub struct ObjectsMainColors {
+    pub bg_color: Color32,
+    pub font_color: Color32,
+    pub stroke_color: Color32,
 }

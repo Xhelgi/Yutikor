@@ -28,7 +28,6 @@ pub fn create_background_context_menu(
                 .add_filter("Images", &["png", "jpg", "jpeg", "webp"])
                 .pick_file()
             {
-
                 let file_name = src_path.file_name().unwrap_or_default();
                 let dest_path = project_path.join(file_name);
 

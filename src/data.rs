@@ -7,6 +7,8 @@ use eframe::egui::Color32;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
+pub struct Graphic {}
+
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Node {
     pub name: String,

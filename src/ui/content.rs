@@ -190,10 +190,10 @@ fn draw_and_process_objects(
             editor_state.grid_size,
             &is_dragged,
         );
-        help_objects::fix_object_position_to_aviable_rect(
-            obj,
-            available_rect.left_top(),
-            available_rect.right_bottom(),
-        );
+        // help_objects::fix_object_position_to_aviable_rect(
+        //     obj,
+        //     available_rect.left_top(),
+        //     available_rect.right_bottom(),
+        // );
     }
 }

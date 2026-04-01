@@ -1,7 +1,7 @@
 // Copyright (C) 2026 Xhelgi
 // This file is part of Yutikor and is released under the GNU GPL v3.0.
 
-use crate::data::{Node, Object, Page, PageLink};
+use crate::data::{Graphic, Node, Object, Page, PageLink};
 use eframe::egui::Color32;
 use std::path::PathBuf;
 
@@ -12,9 +12,9 @@ pub struct Yuti {
     pub editor_state: EditorState,
     pub graph_state: GraphState,
     pub folder_state: FolderState,
+    pub graphic: Graphic,
 }
 
-/// Стейт редактора страницы
 pub struct EditorState {
     pub grid_size: f32,
     pub page_to_close: bool,
@@ -26,7 +26,6 @@ pub struct EditorState {
     pub tools_buf: ToolsBuffer,
 }
 
-/// Временные буферы для tools-панели (hex-строки и color picker)
 pub struct ToolsBuffer {
     pub color: String,
     pub font_color: String,
@@ -36,7 +35,6 @@ pub struct ToolsBuffer {
     pub stroke_color_picker: Color32,
 }
 
-/// Стейт графа и навигации между страницами
 pub struct GraphState {
     pub node_to_remove_by_path: Option<PathBuf>,
     pub node_to_load_by_path: Option<PathBuf>,
@@ -45,7 +43,6 @@ pub struct GraphState {
     pub start_coord: (f32, f32),
 }
 
-/// Стейт экрана выбора папки
 pub struct FolderState {
     pub path_line: String,
     pub is_path_to_clear: bool,
@@ -87,10 +84,10 @@ impl Yuti {
                 path_line: String::new(),
                 is_path_to_clear: false,
             },
+            graphic: Graphic::default(),
         }
     }
 
-    /// Сброс стейта редактора при закрытии/смене страницы
     pub fn reset_editor_state(&mut self) {
         self.editor_state.page_to_close = false;
         self.editor_state.are_tools_visible = false;

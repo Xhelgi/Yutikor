@@ -14,7 +14,7 @@ fn main() -> eframe::Result {
         ..Default::default()
     };
     eframe::run_native(
-        "Yutikora",
+        "Yutikor",
         options,
         Box::new(|cc| Ok(Box::new(Yuti::new(cc)))),
     )
